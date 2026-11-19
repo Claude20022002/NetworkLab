@@ -16,3 +16,14 @@ ros2_lab/captures/_*.pcap
 
 # frames temporaires des videos (regenerables)
 videos/_frames/
+
+# videos generees (on garde les GIF)
+videos/**/*.mp4
+videos/**/*.avi
+videos/**/*.mkv
+videos/**/*.mov
+videos/**/*.m4v
+videos/**/*.mpeg
+videos/**/*.mpg
+videos/**/*.webm
+videos/**/*.wmv
