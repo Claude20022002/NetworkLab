@@ -1,4 +1,4 @@
-# TP Cybersécurité S7 — Sniffing & sécurisation d'un réseau robotique ROS2
+# TP Cybersécurité S7: Sniffing & sécurisation d'un réseau robotique ROS2
 
 **Corrigé complet** du TP *« Network Lab : Sniffing and Analysing a ROS2 Robot
 Network — From Unsecured DDS to SROS2 Encryption »* (HESTIM, 4ᵉ année
@@ -31,7 +31,7 @@ tp-cybRobot/
 │   ├── sros2/                   ← governance.xml, tp_policy.xml, permissions_*.xml
 │   └── keystore/                ← keystore SROS2 (certificats X.509) — LABO uniquement
 ├── scripts/
-│   ├── inject_dds.py            ← injection/spoofing DDS (Scapy)       — Partie A.5 / B.4
+│   ├── inject_dds.py            ← injection/spoofing DDS (Scapy)        Partie A.5 / B.4
 │   ├── timing_analysis.py       ← fingerprinting temporel → timing_plot ← Partie B.5
 │   └── gen_figures.py           ← génère les figures « données » du rapport
 ├── figures/                     ← figures générées + captures d'écran annotées
@@ -54,7 +54,7 @@ docker ps
 docker exec -it ros2_attacker bash               # puis : ros2 topic list
 ```
 
-### Partie A — sniffing non sécurisé
+### Partie A : sniffing non sécurisé
 ```powershell
 .\capture.ps1 -Name unsecured -Seconds 60        # → captures\unsecured.pcap
 .\capture.ps1 -Name discovery -Seconds 30 -Restart   # capture la découverte (topics/types)
@@ -69,7 +69,7 @@ docker run --rm --net=host --cap-add NET_ADMIN --cap-add NET_RAW -v "${PWD}\..\s
   ros2-lab:humble python3 -I /s/inject_dds.py --iface $BR --count 8
 ```
 
-### Partie B — SROS2
+### Partie B : SROS2
 ```powershell
 docker exec -it ros2_attacker bash
   cd /lab/work
