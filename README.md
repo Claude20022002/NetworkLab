@@ -35,7 +35,7 @@ tp-cybRobot/
 │   ├── timing_analysis.py       ← fingerprinting temporel → timing_plot ← Partie B.5
 │   └── gen_figures.py           ← génère les figures « données » du rapport
 ├── figures/                     ← figures générées + captures d'écran annotées
-└── videos/                      ← scripts de démo « clé en main » pour OBS + guide
+└── videos/                      ← vidéos de démo (.gif/.mp4) + scripts OBS + guide
 ```
 
 ## Prérequis
@@ -93,14 +93,27 @@ Retour en mode non sécurisé : `Remove-Item Env:ROS_SECURITY_ENABLE; docker com
 3. **SROS2** : nom d'enclave avec `/` initial ; variables **`ROS_SECURITY_ENABLE`**
    (sans « D ») et **`ROS_SECURITY_KEYSTORE`** (pas `_PATH`).
 
-## Vidéos (OBS)
-Lancez OBS (Enregistrer), puis exécutez le script de la scène voulue
-(voir `videos/README.md`) :
-```powershell
-powershell -ExecutionPolicy Bypass -File .\videos\demo1_sniffing.ps1    # écoute en clair
-powershell -ExecutionPolicy Bypass -File .\videos\demo2_injection.ps1   # spoofing capteur
-powershell -ExecutionPolicy Bypass -File .\videos\demo3_sros2.ps1       # SROS2 bloque tout
-```
+## 🎥 Démonstrations (vidéos)
+
+### 1. Écoute du trafic non sécurisé (Partie A)
+Topics visibles sans authentification et mesures lues en clair.
+
+![Démo 1 — sniffing](videos/demo1_sniffing.gif)
+
+### 2. Usurpation d'un capteur avec Scapy (Partie A.5)
+Le `subscriber` bascule de `24 °C` à la fausse valeur injectée `99.9`.
+
+![Démo 2 — injection](videos/demo2_injection.gif)
+
+### 3. SROS2 chiffre et bloque les attaques (Partie B)
+Trafic chiffré (0 texte lisible), injection rejetée, écoute impossible.
+
+![Démo 3 — SROS2](videos/demo3_sros2.gif)
+
+> Versions MP4 : [`demo1_sniffing.mp4`](videos/demo1_sniffing.mp4) ·
+> [`demo2_injection.mp4`](videos/demo2_injection.mp4) ·
+> [`demo3_sros2.mp4`](videos/demo3_sros2.mp4). Pour enregistrer une démo live
+> (vraie fenêtre Wireshark) avec OBS, voir [`videos/README.md`](videos/README.md).
 
 ## Recompiler le rapport
 ```powershell
