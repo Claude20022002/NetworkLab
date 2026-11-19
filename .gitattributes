@@ -1,0 +1,9 @@
+# Fichiers binaires : ne jamais convertir les fins de ligne
+*.pcap  binary
+*.png   binary
+*.pdf   binary
+*.pem   binary
+*.p7s   binary
+*.der   binary
+# Texte : normalisation LF
+* text=auto eol=lf

@@ -1,0 +1,7 @@
+$ python3 inject_dds.py --iface br-xxxx --count 6      # SROS2 ACTIF (Partie B)
+[*] Interface      : br-xxxx
+[*] Capture d'un paquet /sensor_data legitime (modele)...
+[X] Aucun paquet /sensor_data EN CLAIR capture.
+    -> soit aucun flux, soit le trafic est CHIFFRE (SROS2 actif).
+    L'injection par recopie n'a aucune charge lisible a reutiliser :
+    c'est exactement ce que SROS2 garantit (Partie B).

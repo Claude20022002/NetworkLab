@@ -1,0 +1,15 @@
+# LaTeX (fichiers auxiliaires ; on garde rapport.pdf)
+rapport/*.aux
+rapport/*.log
+rapport/*.out
+rapport/*.toc
+rapport/*.fls
+rapport/*.fdb_latexmk
+rapport/*.synctex.gz
+
+# Python
+__pycache__/
+*.pyc
+
+# captures temporaires
+ros2_lab/captures/_*.pcap

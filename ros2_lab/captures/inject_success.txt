@@ -1,0 +1,9 @@
+[*] Interface      : br-eef54629898c
+[*] Capture d'un paquet /sensor_data legitime (modele)...
+[*] Paquet modele  : 172.24.0.3 -> 172.24.0.4  (SN visible, charge en clair)
+[*] Valeur reelle  : temperature: 24.5, pressure: 1012.8
+[*] Forge de 8 paquet(s) usurpe(s) (temperature=99.9, pressure=6666.6)...
+    SN 191 -> 691 (le subscriber BEST_EFFORT accepte un SN superieur)
+[+] 8 paquet(s) usurpe(s) emis sur br-eef54629898c.
+    Observez : (1) la trame injectee dans Wireshark ;
+               (2) le subscriber afficher la FAUSSE valeur.

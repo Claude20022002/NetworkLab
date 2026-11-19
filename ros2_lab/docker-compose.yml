@@ -1,0 +1,49 @@
+# 2 noeuds ROS2 (publisher + subscriber) sur le reseau isole ros2_lab.
+# Partie B : definir ROS_SECURITY_ENABLE=true (ou ROS_SECURITY_ENABLED=true) (et creer ./keystore) puis relancer.
+services:
+  publisher:
+    build: .
+    image: ros2-lab:humble
+    container_name: ros2_publisher
+    command: python3 /lab/lab_nodes/publisher.py --ros-args --enclave /publisher_node
+    environment: &rosenv
+      ROS_DOMAIN_ID: "0"
+      # NB: sous Humble la variable lue par ROS2 est ROS_SECURITY_ENABLE (sans D).
+      ROS_SECURITY_ENABLE: "${ROS_SECURITY_ENABLE:-${ROS_SECURITY_ENABLED:-false}}"
+      ROS_SECURITY_STRATEGY: "${ROS_SECURITY_STRATEGY:-Enforce}"
+      ROS_SECURITY_KEYSTORE: /lab/keystore
+      # Scenario robot : navigating (defaut) ou idle ; PUBLISH_COMMANDS=false en Partie B.
+      ROBOT_MODE: "${ROBOT_MODE:-navigating}"
+      PUBLISH_COMMANDS: "${PUBLISH_COMMANDS:-true}"
+      SUBSCRIBE_COMMANDS: "${SUBSCRIBE_COMMANDS:-true}"
+      PYTHONUNBUFFERED: "1"
+    volumes:
+      - ./keystore:/lab/keystore
+      - ./lab_nodes:/lab/lab_nodes
+    networks: [ros2_lab]
+
+  subscriber:
+    image: ros2-lab:humble
+    container_name: ros2_subscriber
+    depends_on: [publisher]
+    command: python3 /lab/lab_nodes/subscriber.py --ros-args --enclave /subscriber_node
+    environment: *rosenv
+    volumes:
+      - ./keystore:/lab/keystore
+      - ./lab_nodes:/lab/lab_nodes
+    networks: [ros2_lab]
+
+  # Poste "attaquant" sur le meme reseau : Scapy, tcpdump, ros2 CLI.
+  attacker:
+    image: ros2-lab:humble
+    container_name: ros2_attacker
+    command: sleep infinity
+    cap_add: [NET_ADMIN, NET_RAW]
+    volumes:
+      - ./:/lab/work
+      - ./captures:/captures
+    networks: [ros2_lab]
+
+networks:
+  ros2_lab:
+    external: true

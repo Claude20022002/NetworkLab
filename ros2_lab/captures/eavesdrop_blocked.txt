@@ -1,0 +1,3 @@
+$ ros2 topic echo --once /sensor_data      # attaquant sans certificat, SROS2 ACTIF
+WARNING: topic [/sensor_data] does not appear to be published yet
+Could not determine the type for the passed topic

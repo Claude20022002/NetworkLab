@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Politique d'acces SROS2 du TP (Partie B, etape 2).
+  Matrice d'acces demandee :
+    - publisher_node  : PUBLIE /sensor_data        (DENIE sur /commands)
+    - subscriber_node : S'ABONNE a /sensor_data     (DENIE en publication de donnees)
+    - toute autre identite : DENIEE sur tous les topics
+      (garanti par l'authentification : sans certificat valide, impossible de
+       rejoindre le domaine -> enable_join_access_control=true dans governance.xml)
+
+  Les topics /rosout et /parameter_events et les services de parametres sont des
+  mecanismes internes de ROS2 : ils doivent rester autorises pour que les noeuds
+  demarrent. Le point du TP porte sur les topics de DONNEES (/sensor_data, /commands).
+  C'est pourquoi /commands n'apparait dans AUCUN profil : il est donc refuse a tous.
+-->
+<policy version="0.2.0">
+  <enclaves>
+
+    <!-- Noeud capteur : autorise a publier UNIQUEMENT /sensor_data -->
+    <enclave path="/publisher_node">
+      <profiles>
+        <profile node="publisher_node" ns="/">
+          <topics publish="ALLOW">
+            <topic>sensor_data</topic>
+            <topic>parameter_events</topic>
+            <topic>rosout</topic>
+          </topics>
+          <services reply="ALLOW">
+            <service>~/describe_parameters</service>
+            <service>~/get_parameter_types</service>
+            <service>~/get_parameters</service>
+            <service>~/list_parameters</service>
+            <service>~/set_parameters</service>
+            <service>~/set_parameters_atomically</service>
+          </services>
+        </profile>
+      </profiles>
+    </enclave>
+
+    <!-- Noeud consommateur : autorise a s'abonner UNIQUEMENT a /sensor_data -->
+    <enclave path="/subscriber_node">
+      <profiles>
+        <profile node="subscriber_node" ns="/">
+          <topics subscribe="ALLOW">
+            <topic>sensor_data</topic>
+          </topics>
+          <!-- infrastructure interne ROS2 uniquement (pas de donnees applicatives) -->
+          <topics publish="ALLOW">
+            <topic>parameter_events</topic>
+            <topic>rosout</topic>
+          </topics>
+          <services reply="ALLOW">
+            <service>~/describe_parameters</service>
+            <service>~/get_parameter_types</service>
+            <service>~/get_parameters</service>
+            <service>~/list_parameters</service>
+            <service>~/set_parameters</service>
+            <service>~/set_parameters_atomically</service>
+          </services>
+        </profile>
+      </profiles>
+    </enclave>
+
+  </enclaves>
+</policy>
