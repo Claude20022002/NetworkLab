@@ -35,7 +35,7 @@
 \captionsetup{font=small,labelfont={bf,color=accent}}
 
 \pagestyle{fancy}\fancyhf{}
-\lhead{\small TP Cybersécurité S7 — Réseau robotique ROS2}
+\lhead{\small TP Cybersécurité S7 - Réseau robotique ROS2}
 \rhead{\small DDS non sécurisé $\rightarrow$ SROS2}
 \cfoot{\small\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
@@ -46,11 +46,16 @@
 \begin{document}
 \begin{titlepage}
 \centering
-\vspace*{1.5cm}
-{\small HESTIM — Engineering \& Business School \par}
-{\small 4\textsuperscript{ème} année — Filière Cybersecurity — Semestre S7 \par}
+\IfFileExists{HESTIM.png}{%
+      \includegraphics[width=0.72\textwidth]{HESTIM.png}%
+}{%
+      \fbox{\parbox[c][2cm][c]{0.68\textwidth}{\centering HESTIM}}%
+}\par
+\vspace*{0.7cm}
+{\small HESTIM - Engineering \& Business School \par}
+{\small 4\textsuperscript{ème} année - Filière Cybersecurity, Semestre S7 \par}
 \vspace{1.4cm}
-{\Large\bfseries FASCICULE DE TRAVAUX PRATIQUES — CORRIGÉ\par}
+{\Large\bfseries FASCICULE DE TRAVAUX PRATIQUES\par}
 \vspace{0.6cm}
 {\color{accent}\rule{0.8\textwidth}{1pt}}\par
 \vspace{0.6cm}
@@ -64,18 +69,23 @@
 \textbf{Sujet} & Capture, analyse et injection de trafic DDS ; \\
  & sécurisation par SROS2 ; fingerprinting temporel\\[2mm]
 \textbf{Environnement} & Docker + ROS2 Humble + Wireshark + Scapy\\[2mm]
-\textbf{Évaluation} & Partie A (50\%) + Partie B (50\%)\\
+\textbf{Réalisé par} & \begin{minipage}[t]{0.55\textwidth}\vspace{0pt}
+\begin{itemize}[nosep,leftmargin=*]
+  \item LUSAMOTE KIMFUTA Claudia
+  \item Nom à ajouter
+  \item Nom à ajouter
+  \item Nom à ajouter
+\end{itemize}
+\end{minipage}\\
 \end{tabular}
-\vfill
-{\small Rapport de correction — tous les résultats de ce document ont été
-reproduits sur le réseau Docker isolé \cmd{ros2\_lab}. \par}
-\vspace{4mm}
+
 \end{titlepage}
 
 \tableofcontents
 \vspace{6mm}
 
 % ================================================================== 1
+\newpage
 \section{Environnement et méthodologie}
 
 \paragraph{Plateforme.} Le TP est réalisé sous \textbf{Windows 11} avec
@@ -87,10 +97,10 @@ des fichiers \cmd{.pcap}.
 
 \paragraph{Topologie.} Trois conteneurs sur le réseau bridge isolé \cmd{ros2\_lab} :
 \begin{itemize}[nosep]
-  \item \cmd{ros2\_publisher} — \cmd{publisher\_node} : publie \cmd{/sensor\_data}
+  \item \cmd{ros2\_publisher} - \cmd{publisher\_node} : publie \cmd{/sensor\_data}
         (texte, $\approx$20\,Hz) et \cmd{/commands} (\cmd{Twist}, 2\,Hz) ;
-  \item \cmd{ros2\_subscriber} — \cmd{subscriber\_node} : consomme ces topics ;
-  \item \cmd{ros2\_attacker} — poste attaquant (Scapy, tcpdump, CLI \cmd{ros2}).
+  \item \cmd{ros2\_subscriber} - \cmd{subscriber\_node} : consomme ces topics ;
+  \item \cmd{ros2\_attacker} - poste attaquant (Scapy, tcpdump, CLI \cmd{ros2}).
 \end{itemize}
 
 \paragraph{Trois corrections nécessaires à l'énoncé (spécifiques à Humble).}
@@ -112,9 +122,9 @@ versions correctes ont été utilisées dans tout ce rapport :
 \end{enumerate}
 
 % ================================================================== 2
-\section{Partie A — Sniffing du trafic ROS2 non sécurisé}
+\section{Partie A: Sniffing du trafic ROS2 non sécurisé}
 
-\subsection{Étape 1 — Mise en place et vérification}
+\subsection{Étape 1 - Mise en place et vérification}
 Le réseau et les conteneurs sont lancés, puis la communication ROS2 est vérifiée.
 \begin{lstlisting}[language=bash]
 docker network create --driver bridge ros2_lab
@@ -138,7 +148,7 @@ ros2 topic list                         # -> /sensor_data, /commands, ...
   \cmd{angular\_z}).}
 \end{figure}
 
-\subsection{Étape 2 — Capture Wireshark}
+\subsection{Étape 2 - Capture Wireshark}
 Capture de 60\,s sur l'interface bridge :
 \begin{lstlisting}[language=bash]
 .\capture.ps1 -Name unsecured -Seconds 60    # -> captures\unsecured.pcap
@@ -159,7 +169,7 @@ Répartition par port : 827 paquets vers 7411 (données unicast), 40 vers 7410 e
 40 vers 7400 (découverte SPDP multicast) — ce qui confirme que le filtre
 \cmd{udp.port == 7400} de l'énoncé passerait à côté de l'essentiel du trafic.
 
-\subsection{Étape 3 — Extraction des noms de topics (découverte SPDP/SEDP)}
+\subsection{Étape 3 - Extraction des noms de topics (découverte SPDP/SEDP)}
 Les annonces de découverte transportent, \textbf{en clair}, les noms de topics,
 les types de messages et l'identité des nœuds. Dans Wireshark : filtre
 \cmd{rtps.param.topicName}.
@@ -189,7 +199,7 @@ Topic (DDS) & Type de message & Rôle \\
 (qui publie, qui écoute, sur quels topics, avec quels types) \emph{uniquement} à
 partir du trafic de découverte, \textbf{sans intercepter une seule donnée}.
 
-\subsection{Étape 4 — Lecture du contenu des messages}
+\subsection{Étape 4 - Lecture du contenu des messages}
 Les paquets de données (filtre \cmd{rtps.sm.id == 0x15}) exposent la charge utile
 en clair.
 
@@ -209,7 +219,7 @@ l'environnement et les mouvements du robot ; il peut le suivre, anticiper ses
 trajectoires, et surtout préparer une injection crédible (il connaît les plages
 de valeurs normales).
 
-\subsection{Étape 5 — Injection de paquets (spoofing) avec Scapy}
+\subsection{Étape 5 - Injection de paquets (spoofing) avec Scapy}
 \textbf{Principe de l'attaque} (script \cmd{inject\_dds.py}) : DDS sans SROS2
 n'offre ni authentification ni chiffrement. L'attaquant (1) capture un paquet
 \cmd{DATA} légitime, (2) en recopie l'en-tête — \emph{même GUID d'écrivain}, le
@@ -237,7 +247,7 @@ critique, stopper un process, ou au contraire ignorer un danger réel)
 $\rightarrow$ \textbf{danger physique}. On a aussi observé un effet de déni de
 service : le flux légitime est écrasé par le flux usurpé.
 
-\subsection{Étape 6 — Synthèse Partie A}
+\subsection{Étape 6 - Synthèse Partie A}
 \begin{center}\small
 \begin{tabular}{@{}p{3.2cm}p{11cm}@{}}
 \toprule
@@ -250,9 +260,9 @@ légitime (DoS), pourrait rejouer/altérer des commandes. \\
 \end{center}
 
 % ================================================================== 3
-\section{Partie B — SROS2 et fingerprinting}
+\section{Partie B: SROS2 et fingerprinting}
 
-\subsection{Étape 1 — Création du keystore et des enclaves}
+\subsection{Étape 1 - Création du keystore et des enclaves}
 \begin{lstlisting}[language=bash]
 ros2 security create_keystore keystore
 ros2 security create_enclave keystore /publisher_node     # NB : le slash initial
@@ -263,7 +273,7 @@ Chaque enclave contient un certificat X.509 (\cmd{cert.pem}), une clé privée
 (\cmd{key.pem}), les CA d'identité et de permissions, la gouvernance signée et
 le fichier de permissions signé.
 
-\subsection{Étape 2 — Gouvernance et permissions}
+\subsection{Étape 2 - Gouvernance et permissions}
 \textbf{Gouvernance} (\cmd{sros2/governance.xml}) — tout le domaine est
 authentifié et chiffré :
 \begin{lstlisting}[language=bash]
@@ -294,7 +304,7 @@ pas} \cmd{rt/commands}. Lorsqu'un nœud tente une opération hors de ses droits,
 couche de sécurité DDS refuse la création du reader/writer
 (\emph{« Problem creating associated Reader »}).
 
-\subsection{Étape 3 — Re-capture chiffrée}
+\subsection{Étape 3 - Re-capture chiffrée}
 \begin{lstlisting}[language=bash]
 $env:ROS_SECURITY_ENABLE = "true"
 docker compose up -d --force-recreate publisher subscriber
@@ -305,7 +315,7 @@ l'analyse de \cmd{secured.pcap} donne \textbf{0 occurrence} de la chaîne
 \cmd{temperature} : la charge est chiffrée (voir le volet droit de la figure~3).
 On distingue encore la structure RTPS, mais plus le contenu.
 
-\subsection{Étape 4 — Le spoofing et l'écoute sont bloqués}
+\subsection{Étape 4 - Le spoofing et l'écoute sont bloqués}
 \begin{figure}[H]\centering
   \includegraphics[width=0.84\textwidth]{fig_injection_bloquee.png}\\[2mm]
   \includegraphics[width=0.84\textwidth]{fig_ecoute_bloquee.png}
@@ -318,7 +328,7 @@ d'accès (permissions) stoppent l'usurpation. La catégorie \textbf{STRIDE « S 
 (Spoofing) est mitigée} ; le chiffrement traite « I » (Information disclosure) et
 la signature RTPS traite « T » (Tampering).
 
-\subsection{Étape 5 — Fingerprinting temporel (canal auxiliaire)}
+\subsection{Étape 5 - Fingerprinting temporel (canal auxiliaire)}
 Même chiffré, l'\emph{espacement} des paquets reste visible. Le script
 \cmd{timing\_analysis.py} mesure les intervalles inter-paquets pour deux états :
 
@@ -339,16 +349,16 @@ Robot à l'arrêt (idle) & 7,3 pq/s & 138,0\,ms & 244,2\,ms \\
 \end{tabular}
 \end{center}
 
-\noindent\textbf{Réponse :} oui — le débit et la forme de la distribution
+\noindent\textbf{Réponse :} oui, le débit et la forme de la distribution
 trahissent l'activité du robot (déplacement vs arrêt) malgré le chiffrement.
 C'est une \textbf{attaque par canal auxiliaire}. \textbf{Défenses :} rembourrage
 des paquets à taille constante (\emph{packet padding}), émission à cadence fixe
 avec trafic factice (\emph{constant-rate / dummy traffic}), et obfuscation
-temporelle (jitter aléatoire) — au prix d'un surcoût en bande passante et en
+temporelle (jitter aléatoire), au prix d'un surcoût en bande passante et en
 latence.
 
 % ================================================================== 4
-\section{Recommandations — au-delà de SROS2}
+\section{Recommandations: au-delà de SROS2}
 SROS2 protège l'authentification, l'intégrité et la confidentialité au niveau
 DDS, mais ne couvre pas tout :
 \begin{itemize}[nosep]
