@@ -1,7 +1,7 @@
 # TP Cybersécurité S7: Sniffing & sécurisation d'un réseau robotique ROS2
 
 **Corrigé complet** du TP *« Network Lab : Sniffing and Analysing a ROS2 Robot
-Network — From Unsecured DDS to SROS2 Encryption »* (HESTIM, 4ᵉ année
+Network From Unsecured DDS to SROS2 Encryption »* (HESTIM, 4ᵉ année
 Cybersecurity).
 
 Tout l'environnement tourne dans **Docker** (ROS2 **Humble**), sous **Windows 11**.
