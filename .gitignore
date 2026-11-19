@@ -13,3 +13,6 @@ __pycache__/
 
 # captures temporaires
 ros2_lab/captures/_*.pcap
+
+# frames temporaires des videos (regenerables)
+videos/_frames/
